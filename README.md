@@ -2,7 +2,7 @@
 
 __Anomalon__ / Uh-nom-uh-lon : A theoretical nuclear particle fragment that possesses an uncharacteristically large collision area. It is a highly scientific, smooth-sounding noun that directly borrows the prefix of anomalistic.
 
-The repository is non-active.  It is a one-use repository recording the LLM interactions to:
+The repository is non-active.  It is a one-time-use repository recording the LLM interactions to:
 
 * Find a name for web engine
 * Discover the skeleton requirements for building a web server by

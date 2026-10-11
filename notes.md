@@ -1339,3 +1339,27 @@ cmake --build build --config Release
 
 Would you like me to generate a shell script / OpenSSL configuration command to quickly create the server.crt and server.key files so you can run and test this code locally over HTTPS, or are your certificates already prepared and deployed?
 
+# is sol::thread::create safe across thread boundaries
+
+No, sol::thread::create (and Lua coroutines/states in general via [sol2](https://sol2.readthedocs.io/en/latest/threading.html)) is not thread-safe across C++ thread boundaries. [1]
+
+## Key Facts
+
+* No Built-in Synchronization: Lua does not have native thread safety, and sol2 provides zero internal synchronization or locks for its states, threads, or coroutines. [1]
+* Raw Reference Behavior: Accessing or manipulating a Lua state from multiple C++ threads simultaneously acts like a raw integer reference, leading to severe race conditions, memory corruption, or undefined behavior. [1]
+* Cooperative vs. OS Threads: sol::thread represents a Lua coroutine (a separate runnable state inside the Lua VM), not a hardware or OS std::thread. It runs cooperatively and must be explicitly yielded and resumed. [1, 2]
+
+## Recommended Practices
+
+* One State Per Thread: Spawn a dedicated sol::state for each C++ OS thread if you need parallel execution.
+* Explicit Synchronization: If multiple C++ threads must interact with or share data across Lua states, you must implement your own external mutexes, message queues, or serialized data passing. [1]
+
+If you are trying to share work or pass data between C++ threads and Lua, tell me:
+
+* What kind of task or computation you are trying to run
+* Whether you are using std::thread or a job system
+
+I can help you design a safe inter-thread communication pattern.
+
+[1] [https://sol2.readthedocs.io](https://sol2.readthedocs.io/en/latest/threading.html)
+[2] [https://github.com](https://github.com/ThePhD/sol2/issues/378)
